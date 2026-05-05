@@ -1,6 +1,8 @@
 // ================================
 // IMPORTA BIBLIOTECAS
 // ================================
+
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
@@ -20,8 +22,7 @@ app.use(express.json());
 // CONEXÃO COM BANCO (NEON)
 // ================================
 const pool = new Pool({
-  connectionString:
-    "postgresql://neondb_owner:npg_hw1zCItW4GMd@ep-royal-bar-aml4z1ek-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+  connectionString: process.env.DATABASE_URL,
 });
 
 // =====================================
