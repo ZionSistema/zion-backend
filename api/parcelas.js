@@ -48,9 +48,13 @@ export default async function handler(req, res) {
       [empresa_id, tabela_nome],
     );
 
-    const modalidades = result.rows.map((item) =>
-      item.modalidade?.trim().toLowerCase(),
-    );
+    const modalidades = result.rows
+      .map((item) =>
+        String(item.modalidade || "")
+          .trim()
+          .toLowerCase(),
+      )
+      .filter(Boolean);
 
     console.log("MODALIDADES:", modalidades);
 
