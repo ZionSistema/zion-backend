@@ -36,11 +36,11 @@ export default async function handler(req, res) {
     }
 
     // =====================================
-    // CONTAR REGISTROS DA TABELA
+    // BUSCAR MODALIDADES DA TABELA
     // =====================================
     const result = await pool.query(
       `
-      SELECT COUNT(*) as total
+      SELECT modalidade
       FROM taxas
       WHERE empresa_id = $1
         AND tabela_nome = $2
@@ -48,21 +48,21 @@ export default async function handler(req, res) {
       [empresa_id, tabela_nome],
     );
 
-    const total = Number(result.rows[0].total);
+    const modalidades = result.rows.map((item) =>
+      item.modalidade?.trim().toLowerCase(),
+    );
 
-    console.log("TOTAL REGISTROS:", total);
+    console.log("MODALIDADES:", modalidades);
 
     // =====================================
-    // DEFINIR LIMITE DE PARCELAS
+    // DEFINIR LIMITE REAL
     // =====================================
     let maxParcelas = 12;
 
-    if (total >= 23) {
+    if (modalidades.includes("21x")) {
       maxParcelas = 21;
-    } else if (total >= 20) {
+    } else if (modalidades.includes("18x")) {
       maxParcelas = 18;
-    } else {
-      maxParcelas = 12;
     }
 
     console.log("MAX PARCELAS:", maxParcelas);
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
     // =====================================
     return res.status(200).json({
       sucesso: true,
-      total_registros: total,
+      total_registros: modalidades.length,
       max_parcelas: maxParcelas,
     });
   } catch (error) {
